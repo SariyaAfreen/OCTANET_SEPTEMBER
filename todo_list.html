@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            margin: 0;
+            text-align: center;
+        }
+
+        #main-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        #task-list {
+            width: 45%;
+            max-width: 400px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #task-form {
+            width: 45%;
+            max-width: 400px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        button.mark-complete {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        button.mark-complete:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task Manager</h1>
+
+    <div id="main-container">
+        <div id="task-list">
+            <h2>Task List</h2>
+            <ul id="tasks"></ul>
+        </div>
+
+        <div id="task-form">
+            <h2>Add Task</h2>
+            <form id="add-task-form">
+                <label for="task-name">Task Name:</label>
+                <input type="text" id="task-name" required><br>
+
+                <label for="task-category">Category:</label>
+                <input type="text" id="task-category"><br>
+
+                <label for="task-deadline">Deadline:</label>
+                <input type="date" id="task-deadline"><br>
+
+                <label for="task-priority">Priority:</label>
+                <select id="task-priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select><br>
+
+                <label for="task-labels">Labels (comma-separated):</label>
+                <input type="text" id="task-labels"><br>
+
+                <button type="button" onclick="addTask()">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const tasks = [];
+
+        function addTask() {
+            const name = document.getElementById("task-name").value;
+            const category = document.getElementById("task-category").value;
+            const deadline = document.getElementById("task-deadline").value;
+            const priority = document.getElementById("task-priority").value;
+            const labels = document.getElementById("task-labels").value.split(",").map(label => label.trim());
+
+            const task = {
+                name,
+                category,
+                deadline,
+                priority,
+                labels,
+                completed: false
+            };
+
+            tasks.push(task);
+
+            displayTasks();
+            clearForm();
+        }
+
+        function displayTasks() {
+            const tasksList = document.getElementById("tasks");
+            tasksList.innerHTML = "";
+
+            tasks.forEach((task, index) => {
+                const listItem = document.createElement("li");
+                const status = task.completed ? "Completed" : "Not Completed";
+                listItem.textContent = `${index + 1}. ${task.name} (${task.category}) - Priority: ${task.priority} - Deadline: ${task.deadline} - Status: ${status} - Labels: ${task.labels.join(", ")}`;
+
+                const completeButton = document.createElement("button");
+                completeButton.textContent = "Mark Complete";
+                completeButton.className = "mark-complete";
+                completeButton.onclick = () => markTaskCompleted(index);
+                listItem.appendChild(completeButton);
+
+                tasksList.appendChild(listItem);
+            });
+        }
+
+        function markTaskCompleted(index) {
+            if (index >= 0 && index < tasks.length) {
+                tasks[index].completed = true;
+                displayTasks();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById("add-task-form").reset();
+        }
+    </script>
+</body>
+</html>
